@@ -29,8 +29,8 @@
     "node": ">=8.9.0"
   },
   "bugs": {
-    "url": "https://github.com/vuejs/vue-cli/issues"
+    "url": "https://github.com/mwang0/ddl2model/issues"
   },
-  "homepage": "https://github.com/vuejs/vue-cli#readme"
+  "homepage": "https://github.com/mwang0/ddl2model#readme"
 
 }
