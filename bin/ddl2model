@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+const fs = require('fs')
+const path = require('path')
+const chalk = require('chalk')
+const program = require('commander')
+const ddl2Model = require('../index')
+program.version(require('../package.json').version)
+    .option('-f, --filepath <filepath>', 'ddl file path')
+    .option('-o,--output <output>', 'output path')
+    .option('-c, --config <config>', 'config file path')
+    .on('--help', function(){
+        console.log(chalk.gray(' Examples:'))
+        console.log('    $ ddl2model -f ./ddl.sql -o ./output -c ./config.json')
+        console.log()
+        console.log()
+    })
+program.parse(process.argv)
+if(!program.filepath) return program.help()
+
+let {filepath, output, config} = program
+if(!filepath) return program.help()
+
+filepath = path.resolve(process.cwd(), filepath)
+output = output ?  path.resolve(process.cwd(), output) :  path.resolve(process.cwd(), './output')
+config = config || {}
+
+ddl2Model(filepath, output, config)
+

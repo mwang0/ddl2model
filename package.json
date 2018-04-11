@@ -1,0 +1,36 @@
+{
+  "name": "ddl2model",
+  "version": "1.0.1",
+  "description": "mysql ddl => sequelize model tools",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "index.js",
+  "bin": {
+    "ddl2model": "bin/ddl2model"
+  },
+  "keywords": [
+    "ddl2model",
+    "ddl",
+    "sequelize model"
+  ],
+  "author": "M.Wang",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.3.2",
+    "commander": "^2.15.1",
+    "ejs": "^2.5.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwang0/ddl2model.git"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "bugs": {
+    "url": "https://github.com/vuejs/vue-cli/issues"
+  },
+  "homepage": "https://github.com/vuejs/vue-cli#readme"
+
+}

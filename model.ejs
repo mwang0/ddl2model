@@ -1,0 +1,25 @@
+/**
+* Created by ddl2Model on <%= (new Date().toLocaleString())%>
+* TableName: <%=name%> <<%=comment%>>
+*/
+
+"use strict";
+module.exports = function(sequlize, DataTypes){
+    return sequlize.define("<%=name%>",{
+<% for(var i=0; i < fields.length; i++){%>
+<% var fd = fields[i]
+    var fds = []
+    fds.push(`type:DataTypes.${fd.type}(${fd.length})`)
+    if(fd.name == autoincrementField) fds.push('autoIncrement:true')
+    if(fd.name == primaryKey) fds.push('primaryKey:true')
+    if(fd.defaultValue != ''){
+        if(fd.defaultValue === 'timestamps') fds.push('defaultValue: Data.now()')
+        else fds.push(`defaultValue: ${fd.defaultValue}`)
+    }%>
+        <%=fields[i].name%>: { <%- fds.join(', ')%>}, <%if(fields[i].comment != '') {%>//<%=fields[i].comment%><%}%>
+        <%}%>
+    },{
+        freezeTableName: true,
+        tableName: "<%=name%>"
+    })
+}
