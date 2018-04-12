@@ -1,0 +1,8 @@
+{
+  "defaultValues": {
+    "create_time": "Date.now()",
+    "update_time": "Date.now()"
+  },
+  "modelTmpl": "/**\n* Created by ddl2Model on <%= (new Date().toLocaleString())%>\n* TableName: <%=name%> <<%=comment%>>\n*/\n\n\"use strict\";\nmodule.exports = app => {\n    const Sequelize = app.Sequelize;\n    const model = app.model.define(\"<%=name%>\",{\n<% for(var i=0; i < fields.length; i++){%>\n<% var fd = fields[i]\n    var fds = []\n    fds.push(`type:DataTypes.${fd.type}(${fd.length})`)\n    if(fd.name == autoincrementField) fds.push('autoIncrement:true')\n    if(fd.name == primaryKey) fds.push('primaryKey:true')\n    if(fd.defaultValue != ''){\n        if(fd.defaultValue === 'timestamps') fds.push('defaultValue: Data.now()')\n        else fds.push(`defaultValue: ${fd.defaultValue}`)\n    }%>\n        <%=fields[i].name%>: { <%- fds.join(', ')%>}, <%if(fields[i].comment != '') {%>//<%=fields[i].comment%><%}%>\n        <%}%>\n    },{\n        freezeTableName: true,\n        tableName: \"<%=name%>\"\n    })\n}\n",
+  "buildModelFileName": "name, return toCamelCase(name.replace('forum_','')) + '.js';"
+}

@@ -136,6 +136,15 @@ module.exports = function(sqlFilePath, outputPath, config){
         rmdir(outputPath)
         mkdir(outputPath)
     }
+    if(config.buildModelfileName){
+        try{
+            config.buildModelfileName = new Function(config.buildModelfileName)
+            config.buildModelfileName('test_test')
+        } catch (e){
+            log('> '+chalk.red('run buildModelfileName fn error.，'+e.message))
+            return
+        }
+    }
     config = Object.assign({}, CONFIG, config)
 
     let sqlContent = ''
@@ -154,6 +163,7 @@ module.exports = function(sqlFilePath, outputPath, config){
     const tables = buildTables(matched, config)
     log(chalk.blue('开始生成model文件...'))
     let ok = 0, err = 0
+
     Object.keys(tables).forEach(key=>{
         let table = tables[key]
         let model = ejs.render(config.modelTmpl, table)
