@@ -123,7 +123,7 @@ const CONFIG ={
     buildModelfileName:function(name){
         return toCamelCase(name) + '.js'
     },
-    modelTmpl: fs.readFileSync(path.join(process.cwd(),'./model.ejs')).toString()
+    modelTmpl: fs.readFileSync(path.join(__dirname,'./model.ejs')).toString()
 }
 
 module.exports = function(sqlFilePath, outputPath, config){
@@ -174,6 +174,7 @@ module.exports = function(sqlFilePath, outputPath, config){
             fs.writeFileSync(path.join(outputPath, fileName), model)
             ok++
         } catch (e){
+            log(chalk.red('wirte file error:，'+e.message))
             err++
         }
     })
