@@ -174,7 +174,7 @@ module.exports = function(sqlFilePath, outputPath, config){
             fs.writeFileSync(path.join(outputPath, fileName), model)
             ok++
         } catch (e){
-            log(chalk.red('wirte file error:，'+e.message))
+            log(chalk.red('write file error:，'+e.message))
             err++
         }
     })
