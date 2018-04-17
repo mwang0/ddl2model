@@ -126,15 +126,25 @@ const CONFIG ={
     modelTmpl: fs.readFileSync(path.join(__dirname,'./model.ejs')).toString()
 }
 
-module.exports = function(sqlFilePath, outputPath, config){
+module.exports = function(sqlFilePath, outputPath, configFilePath){
     if(!isExist(sqlFilePath)){
         return log(''+chalk.red('sql文件在哪呢？'))
+    }
+    let config = {}
+    if(configFilePath && !isExist(configFilePath)){
+        return log(''+chalk.red('config文件在哪呢？'))
     }
     if(!isDirectory(outputPath)){
         mkdir(outputPath)
     } else {
         rmdir(outputPath)
         mkdir(outputPath)
+    }
+    try{
+        config = fs.readFileSync(configFilePath).toString()
+        config = JSON.parse(config)
+    } catch (e){
+        return log('> '+chalk.red('读取config文件失败，'+e.message))
     }
     if(config.buildModelfileName){
         try{
@@ -145,8 +155,8 @@ module.exports = function(sqlFilePath, outputPath, config){
             return
         }
     }
+    
     config = Object.assign({}, CONFIG, config)
-
     let sqlContent = ''
 
     log(chalk.blue('读取sql文件内容...'))
