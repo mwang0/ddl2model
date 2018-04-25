@@ -23,6 +23,6 @@ if(!filepath) return program.help()
 
 filepath = path.resolve(process.cwd(), filepath)
 output = output ?  path.resolve(process.cwd(), output) :  path.resolve(process.cwd(), './output')
-config = path.resolve(process.cwd(), config)
+config = config ? path.resolve(process.cwd(), config) : undefined
 ddl2Model(filepath, output, config)
 

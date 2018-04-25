@@ -8,8 +8,8 @@ const createTableReg = /(CREATE TABLE ((.|\r|\n)*?)Compact)/gi
 const tableInfoReg = /CREATE TABLE `(\w+)`(?:(?:.|\r|\n)*?)COMMENT = '(.*)' ROW_FORMAT = Compact/i
 const primaryKeyReg = /PRIMARY KEY \(`(.+)`\).*/i
 const autoincrementReg = /\s+`(.*)`.*AUTO_INCREMENT.*,/i
-const fieldReg = /\s+`(.*)`\s+(\w+)\((\d+)\).*?(?:DEFAULT\s+(.*)\s+COMMENT\s+'(.*)')?,/gi
-
+// const fieldReg = /\s+`(.*)`\s+(\w+)\((\d+)\).*?(?:DEFAULT\s+(.*)\s+COMMENT\s+'(.*)')?,/gi
+const fieldReg = /\s+`(.*)`\s+(\w+)(?:\((\d+)\)|).*?(?:(?:DEFAULT\s+(.*)|)\s+COMMENT\s+'(.*)')?,/gi
 //help functions
 const isExist = function(dir) {
     dir = path.normalize(dir)
@@ -69,6 +69,7 @@ const buildTables = function(matched, config){
 
         while ((field = fieldReg.exec(ddl)) != null) {
             let defaultValue=field[4] || ''
+            defaultValue = defaultValue === 'NULL' ? null : defaultValue
             if(config.defaultValues[field[1]]) defaultValue = config.defaultValues[field[1]]
             fields.push({
                 name: field[1],
@@ -120,7 +121,7 @@ const CONFIG ={
         LONGTEXT: 'BLOB'
     },
     defaultValues:{},
-    buildModelfileName:function(name){
+    buildModelFileName:function(name){
         return toCamelCase(name) + '.js'
     },
     modelTmpl: fs.readFileSync(path.join(__dirname,'./model.ejs')).toString()
@@ -133,6 +134,12 @@ module.exports = function(sqlFilePath, outputPath, configFilePath){
     let config = {}
     if(configFilePath && !isExist(configFilePath)){
         return log(''+chalk.red('config文件在哪呢？'))
+        try{
+            config = fs.readFileSync(configFilePath).toString()
+            config = JSON.parse(config)
+        } catch (e){
+            return log('> '+chalk.red('读取config文件失败，'+e.message))
+        }
     }
     if(!isDirectory(outputPath)){
         mkdir(outputPath)
@@ -140,18 +147,13 @@ module.exports = function(sqlFilePath, outputPath, configFilePath){
         rmdir(outputPath)
         mkdir(outputPath)
     }
-    try{
-        config = fs.readFileSync(configFilePath).toString()
-        config = JSON.parse(config)
-    } catch (e){
-        return log('> '+chalk.red('读取config文件失败，'+e.message))
-    }
-    if(config.buildModelfileName){
+
+    if(config.buildModelFileName){
         try{
-            config.buildModelfileName = new Function(config.buildModelfileName)
-            config.buildModelfileName('test_test')
+            eval('config.buildModelFileName = '+ config.buildModelFileName)
+            config.buildModelFileName('test_buildModelFileName')
         } catch (e){
-            log('> '+chalk.red('run buildModelfileName fn error.，'+e.message))
+            log('> '+chalk.red('run buildModelFileName fn error.，'+e.message))
             return
         }
     }
@@ -179,7 +181,7 @@ module.exports = function(sqlFilePath, outputPath, configFilePath){
         let model = ejs.render(config.modelTmpl, table)
         model = model.replace(/\n{2,}/g,'\n')
         model = model.replace(/\n(\s+)\n/g,'\n')
-        let fileName = config.buildModelfileName(table.name)
+        let fileName = config.buildModelFileName(table.name)
         try{
             fs.writeFileSync(path.join(outputPath, fileName), model)
             ok++

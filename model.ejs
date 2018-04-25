@@ -9,7 +9,9 @@ module.exports = function(sequlize, DataTypes){
 <% for(var i=0; i < fields.length; i++){%>
 <% var fd = fields[i]
     var fds = []
-    fds.push(`type:DataTypes.${fd.type}(${fd.length})`)
+    if(fd.type == 'TEXT')fds.push("type:Sequelize.TEXT")
+    else if(fd.type == 'TINYTEXT')fds.push('type:Sequelize.TEXT("tiny")')
+    else fds.push(`type:Sequelize.${fd.type}(${fd.length})`)
     if(fd.name == autoincrementField) fds.push('autoIncrement:true')
     if(fd.name == primaryKey) fds.push('primaryKey:true')
     if(fd.defaultValue != ''){
