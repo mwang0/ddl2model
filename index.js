@@ -132,8 +132,8 @@ module.exports = function(sqlFilePath, outputPath, configFilePath){
         return log(''+chalk.red('sql文件在哪呢？'))
     }
     let config = {}
-    if(configFilePath && !isExist(configFilePath)){
-        return log(''+chalk.red('config文件在哪呢？'))
+    if(configFilePath){
+        if ( !isExist(configFilePath))return log(''+chalk.red('config文件在哪呢？'))
         try{
             config = fs.readFileSync(configFilePath).toString()
             config = JSON.parse(config)

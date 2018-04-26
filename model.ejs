@@ -14,7 +14,7 @@ module.exports = function(sequlize, DataTypes){
     else fds.push(`type:Sequelize.${fd.type}(${fd.length})`)
     if(fd.name == autoincrementField) fds.push('autoIncrement:true')
     if(fd.name == primaryKey) fds.push('primaryKey:true')
-    if(fd.defaultValue != ''){
+    if(fd.defaultValue != '' && fd.name != autoincrementField && fd.name != primaryKey){
         if(fd.defaultValue === 'timestamps') fds.push('defaultValue: Data.now()')
         else fds.push(`defaultValue: ${fd.defaultValue}`)
     }%>
